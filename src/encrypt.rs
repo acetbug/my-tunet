@@ -59,7 +59,6 @@ struct DataEncryptIter<'a> {
 impl<'a> Iterator for DataEncryptIter<'a> {
     type Item = (&'a mut u32, u32, u32);
 
-    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
             let cur_ptr = self.cur_ptr;
@@ -116,7 +115,6 @@ struct KeyIter<'a> {
 impl<'a> Iterator for KeyIter<'a> {
     type Item = u32;
 
-    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         let k = self.key[self.idx & 3];
         self.idx += self.step;
@@ -124,7 +122,6 @@ impl<'a> Iterator for KeyIter<'a> {
     }
 }
 
-#[allow(arithmetic_overflow)]
 pub fn encode(user: &User, ac_id: u32, token: &str) -> Result<String, Box<dyn Error>> {
     let key = Key::from(token)?;
     let data = format!(
