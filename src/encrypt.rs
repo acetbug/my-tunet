@@ -100,7 +100,6 @@ impl Key {
             key: &self.key,
             idx: e as usize,
             step: if e & 1 == 0 { 1 } else { 3 },
-            _p: PhantomData,
         }
     }
 }
@@ -109,7 +108,6 @@ struct KeyIter<'a> {
     key: &'a [u32; 4],
     idx: usize,
     step: usize,
-    _p: PhantomData<&'a u32>,
 }
 
 impl<'a> Iterator for KeyIter<'a> {

@@ -10,10 +10,7 @@ pub struct LoginClient {
 impl LoginClient {
     pub fn new() -> Self {
         Self {
-            client: ClientBuilder::new()
-                .no_proxy()
-                .build()
-                .unwrap(),
+            client: ClientBuilder::new().no_proxy().build().unwrap(),
         }
     }
 
