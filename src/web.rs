@@ -12,7 +12,6 @@ impl LoginClient {
         Self {
             client: ClientBuilder::new()
                 .no_proxy()
-                .cookie_store(true)
                 .build()
                 .unwrap(),
         }
@@ -25,7 +24,7 @@ impl LoginClient {
             .send()
             .await?;
         let body = res.text().await?;
-        let re = Regex::new(r"_(\d+)").unwrap();
+        let re = Regex::new(r"index_(\d+)\.html").unwrap();
         match re.captures(&body) {
             Some(caps) => Ok(caps[1].parse::<u32>().unwrap()),
             None => Err("Failed to find ac_id in response body".into()),
