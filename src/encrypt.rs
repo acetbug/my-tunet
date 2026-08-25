@@ -11,7 +11,7 @@ use base64::{
     engine::{GeneralPurpose, general_purpose::PAD},
 };
 
-use crate::models::User;
+use crate::creds;
 
 struct Data {
     data: Vec<u8>,
@@ -31,7 +31,7 @@ impl Data {
         self.data.len() >> 2
     }
 
-    fn encrypt_iter(&mut self) -> DataEncryptIter {
+    fn encrypt_iter(&mut self) -> DataEncryptIter<'_> {
         let start = self.data.as_mut_ptr();
         DataEncryptIter {
             cur_ptr: start,
@@ -95,7 +95,7 @@ impl Key {
         Ok(k)
     }
 
-    fn iter(&self, e: u32) -> KeyIter {
+    fn iter(&self, e: u32) -> KeyIter<'_> {
         KeyIter {
             key: &self.key,
             idx: e as usize,
@@ -120,11 +120,15 @@ impl<'a> Iterator for KeyIter<'a> {
     }
 }
 
-pub fn encode(user: &User, ac_id: u32, token: &str) -> Result<String, Box<dyn Error>> {
+pub fn encode(
+    creds: &creds::Credentials,
+    ac_id: u32,
+    token: &str,
+) -> Result<String, Box<dyn Error>> {
     let key = Key::from(token)?;
     let data = format!(
         "{{\"acid\":{},\"enc_ver\":\"srun_bx1\",\"ip\":\"\",\"password\":\"{}\",\"username\":\"{}\"}}",
-        ac_id, user.password, user.username
+        ac_id, creds.password, creds.username
     );
     let mut data = Data::from(data);
     let q = 6 + 52 / data.len();

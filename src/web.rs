@@ -32,7 +32,7 @@ impl LoginClient {
         let params = [("username", username), ("callback", "callback")];
         let res = self
             .client
-            .get("https://auth4.tsinghua.edu.cn/cgi-bin/get_challenge")
+            .get("https://auth6.tsinghua.edu.cn/cgi-bin/get_challenge")
             .query(&params)
             .send()
             .await?;
@@ -63,7 +63,7 @@ impl LoginClient {
             ("chksum", chksum),
         ];
         self.client
-            .post("https://auth4.tsinghua.edu.cn/cgi-bin/srun_portal")
+            .post("https://auth6.tsinghua.edu.cn/cgi-bin/srun_portal")
             .form(&params)
             .send()
             .await?;
