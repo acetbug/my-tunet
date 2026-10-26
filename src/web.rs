@@ -14,18 +14,15 @@ impl LoginClient {
         }
     }
 
-    pub async fn get_ac_id(&self) -> Result<u32, Box<dyn Error>> {
+    pub async fn get_ac_id(&self) -> Result<Option<String>, Box<dyn Error>> {
         let res = self
             .client
-            .get("http://www.tsinghua.edu.cn/")
+            .get("http://login.tsinghua.edu.cn/")
             .send()
             .await?;
         let body = res.text().await?;
-        let re = Regex::new(r"index_(\d+)\.html").unwrap();
-        match re.captures(&body) {
-            Some(caps) => Ok(caps[1].parse::<u32>().unwrap()),
-            None => Err("Failed to find ac_id in response body".into()),
-        }
+        let re = Regex::new(r"index_(\d+)\.html")?;
+        Ok(re.captures(&body).map(|caps| caps[1].to_string()))
     }
 
     pub async fn get_challenge(&self, username: &str) -> Result<String, Box<dyn Error>> {
@@ -37,7 +34,7 @@ impl LoginClient {
             .send()
             .await?;
         let body = res.text().await?;
-        let re = Regex::new(r"\w{64}").unwrap();
+        let re = Regex::new(r"\w{64}")?;
         match re.captures(&body) {
             Some(caps) => Ok(caps[0].to_string()),
             None => Err("Failed to find challenge in response body".into()),
@@ -46,7 +43,7 @@ impl LoginClient {
 
     pub async fn login(
         &self,
-        ac_id: &u32,
+        ac_id: &str,
         username: &str,
         password_md5: &str,
         info: &str,

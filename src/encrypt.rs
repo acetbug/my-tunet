@@ -122,7 +122,7 @@ impl<'a> Iterator for KeyIter<'a> {
 
 pub fn encode(
     creds: &creds::Credentials,
-    ac_id: u32,
+    ac_id: &str,
     token: &str,
 ) -> Result<String, Box<dyn Error>> {
     let key = Key::from(token)?;
